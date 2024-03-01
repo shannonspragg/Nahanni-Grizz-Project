@@ -1,4 +1,4 @@
-# Prep Crown Land Data ----------------------------------------------------
+# Bring in and Format our Study Boundary Data ----------------------------------------------------
 
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
@@ -11,8 +11,8 @@ library(raster)
 
 # Load Land cover data -------------------------------------------------------------
 
-ab_crownlands <- st_read("data/original/Crown_Reservations_2018Dec.shp")
-
+mountain_parks <- st_make_valid(st_read("data/original/Yukon, Nahanni, Mountain Parks Shapefile Complete.shp"))
+# Layers were transformed to EPSG:4326 CRS WGS 84
 
 # Crop to our Region --------------------------------------------------------
 bhb.buf <- st_read("data/processed/bhb_50km.shp")
