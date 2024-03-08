@@ -1,5 +1,5 @@
 
-# Prep elevation,  slope,  aspect,  and terrain ruggedness ----------------
+# Prep DEM elevation,  slope,  aspect,  and terrain ruggedness ----------------
 
 
 # Load Packages -----------------------------------------------------------
@@ -9,65 +9,57 @@ library(tidyverse)
 library(raster)
 
 # Bring in Data -----------------------------------------------------------
-bhb.50km.boundary <- st_read("data/processed/bhb_50km.shp")
-temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
-bhb.bound.v <- vect(bhb.50km.boundary)
-temp.raster <- raster("data/processed/dist2pa_km_bhb.tif")
+  # Boundaries
+mountain_parks <- st_read("data/original/Yukon, Nahanni, Mountain Parks Shapefile Complete.shp")
+parks.buffer.10km <- st_read("data/processed/parks_10km_buffer.shp")
+temp.rast <- rast("data/processed/parks_buf_temprast.tif")
+parks.bound.v <- vect(parks.buffer.10km)
+temp.raster <- raster("data/processed/parks_buf_temprast.tif")
+  # DEM layers
+aspect <- rast("data/original/Aspect.tiff")
+slope <- rast("data/original/Slope.tiff")
+roughness <- rast("data/original/Terrain_Roughness_Index.tiff") #TRI
+DEM <- rast("data/original/DEM_WGS84_final.tiff")
 
 # Prep elevation data: ----------------------------------------------------
-elev.can <- rast(raster::getData('alt', country = 'CAN'))
-elev.bhb.crop <- crop(elev.can, project(bhb.bound.v, elev.can)) #crop to bhb
+  # Take a look at these
+aspect
+slope
+roughness
+DEM
 
-elev.bhb.raster <- raster(elev.bhb.crop)
-slope.bhb <- raster::terrain(elev.bhb.raster, opt = "slope", unit='degrees')
-#aspect.bhb <- raster::terrain(elev.bhb.raster, opt = "aspect", unit='degrees')
+plot(aspect)
+plot(slope)
+plot(roughness)
+plot(DEM)
+  # Want these to match our temp rast
+aspect.crop <- crop(aspect, project(parks.bound.v, aspect)) #crop to buffer
+slope.crop <- crop(slope, project(parks.bound.v, slope)) 
+roughness.crop <- crop(roughness, project(parks.bound.v, roughness)) 
+DEM.crop <- crop(aspect, project(parks.bound.v, DEM)) 
 
-elev.bhb.rast <- rast(elev.bhb.raster)
-slope.bhb.rast <- rast(slope.bhb)
+  # May need to resample to match res for all
+# aspect.rsmpl <- terra::resample(aspect.crop, temp.rast) # Not working, leaving empty values
+# slope.rsmpl  <- terra::resample(slope.crop, temp.rast)
 
-elev.rsmpl <- terra::resample(elev.bhb.rast, temp.rast)
-slope.rsmpl  <- terra::resample(slope.bhb.rast, temp.rast)
+#aspect.rsmpl <- terra::aggregate(aspect.crop, 2, method = "bilinear")
 
-elev.km <- measurements::conv_unit(elev.rsmpl, "m", "km")
+temp.rast.rsmpl <- terra::resample(temp.rast, aspect.crop)
 
-# Code aspect into categories: flat, N, NE, E, SE, S, SW, W, NW;
-# 
-# aspect.flat <- (aspect.bhb == -1)
-# aspect.NW <- (aspect.bhb <= 22.5)
-# 
-# aspect.N <- aspect.bhb[0,22.5]
-# aspect.NE <- (aspect.bhb == 22.5:67.5 )
-# 
-# #Reclassify the values into 7 groups
-# #all values between 0 and 20 equal 1, etc.
-# m <- c(-1, 0, 22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5, 360)
-# 
-# r <- as.factor(aspect.bhb)
-# 
-# ## Add a landcover column to the Raster Attribute Table
-# rat <- levels(r)[[1]]
-# rat[["aspect direction"]] <- c("flat","N", "NE","E", "SE", "S", "SW", "W", "NW")
-# levels(r) <- rat
-# 
+#elev.km <- measurements::conv_unit(elev.rsmpl, "m", "km")
 
-# is.factor(aspect.bhb)
-# direction <- data.frame(ID=1:9, cover=c("flat", "N", "NE", "E", "SE", "S", "SW", "W", "NW"))
-# levels(aspect.bhb) <- direction
-# aspect.f <- as.factor(aspect.bhb)
-# labels(aspect.f) <- letters[1:length(labels(aspect.f))]
+dem.stack <- c(aspect.crop, slope.crop, roughness.crop, DEM.crop)
+plot(dem.stack)
 
+# Save layers: --------------------------------------------
 
-# Prep terrain ruggedness: --------------------------------------------
-rough <- terrain(elev.bhb.crop, v="TRI")
-rough.max <-  global(rough, "max", na.rm=TRUE)[1,]
-rough.min <-  global(rough, "min", na.rm=TRUE)[1,]
-rough.rescale <- (rough - rough.min)/(rough.max - rough.min)
-rough.proj <- project(rough.rescale, temp.rast)
-
-
-writeRaster(rough.proj, "data/processed/terrain_ruggedness_bhb.tif", overwrite=TRUE)
-writeRaster(slope.rsmpl, "data/processed/slope_bhb.tif", overwrite=TRUE)
-writeRaster(elev.rsmpl, "data/processed/elevation_bhb.tif", overwrite=TRUE)
-writeRaster(elev.km, "data/processed/elevation_km_bhb.tif", overwrite=TRUE)
-
+# terra::writeRaster(roughness.crop, "data/processed/terrain_ruggedness_parks.tif", overwrite=TRUE)
+# terra::writeRaster(slope.crop, "data/processed/slope_parks.tif", overwrite=TRUE)
+# writeRaster(aspect.crop, "data/processed/aspect_parks.tif", overwrite=TRUE)
+# writeRaster(DEM.crop, "data/processed/DEM_parks.tif", overwrite=TRUE)
+  # Each of these is a couple GB - save space and do .rds file
+saveRDS(roughness.crop, "data/processed/terrain_ruggedness_parks.rds")
+saveRDS(slope.crop, "data/processed/slope_parks.rds")
+saveRDS(aspect.crop, "data/processed/aspect_parks.rds")
+saveRDS(DEM.crop, "data/processed/DEM_parks.rds")
 

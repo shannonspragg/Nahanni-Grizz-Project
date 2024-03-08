@@ -14,39 +14,35 @@ library(raster)
 mountain_parks <- st_make_valid(st_read("data/original/Yukon, Nahanni, Mountain Parks Shapefile Complete.shp"))
 # Layers were transformed to EPSG:4326 CRS WGS 84
 
+
+# Prep Template Raster ----------------------------------------------------
+st_crs(mountain_parks) # EPSG 4326 - like we need
+mtn.parks.vect <- vect(mountain_parks)
+
+# Should buffer our shapefile by a little bit
+parks.buffer <- mountain_parks %>%  # buffer by 50km
+  st_buffer(., 10000) 
+parks.buf.vect <- vect(parks.buffer)
+ext(parks.buf.vect)
+
+parks.ext <- ext(-141.556549391541, -113.402137181532, 48.8308791271895, 69.8179155213936 ) # buffer extent
+
+temp.rast <- rast(res=c(30,30), ext=parks.ext) # Let's do a 1km x 1km res for computational purposes
+crs(temp.rast) <- "epsg:4326" # EPSG:4326 CRS WGS 84
+values(temp.rast) <- rep(1, ncell(temp.rast))
+
+plot(temp.rast)
+plot(mtn.parks.vect, add=T)
+
 # Crop to our Region --------------------------------------------------------
-bhb.buf <- st_read("data/processed/bhb_50km.shp")
 
-crown.reproj<- st_transform(ab_crownlands, st_crs(bhb.buf))
+park.boundary.rast <- terra::rasterize(parks.buf.vect, temp.rast, field = "NAME_E")
+values(park.boundary.rast) <- rep(1, ncell(park.boundary.rast))
 
-st_crs(crown.reproj) == st_crs(bhb.buf)
-
-st_is_valid(bhb.buf)
-st_is_valid(crown.reproj)
-
-# Try this in terra:
-template.rast <- rast("data/processed/dist2pa_km_bhb.tif")
-
-bhb.v <- vect(bhb.buf)
-crownland.v <- vect(crown.reproj)
-
-bhb.crownland.crop <- crop(crownland.v, template.rast)
-
-bhb.crownland.rast <- terra::rasterize(bhb.crownland.crop, template.rast, field = "PASITES_ID")
-
-  # Make a continuous raster:
-bhb.crownland.rast[bhb.crownland.rast > 41] <- 1
-
-bhb.crown.raster <- raster(bhb.crownland.rast)
-bhb.crown.raster[is.na(bhb.crown.raster[])] <- 0 
-
-# bhb.rast <- terra::rasterize(bhb.v, template.rast, field = "OBJECTID")
-# 
-# crown.lands.r <- terra::mask(bhb.rast, bhb.crownland.rast, updatevalue=0)
-# names(crown.lands.r)[names(crown.lands.r) == "OBJECTID"] <- "crownland"
-# bhb.crown.rast <- terra::mask(crown.lands.r, bhb.v)
+park.boundary.rast <- mask(park.boundary.rast, parks.buf.vect) # this is still just the box
 
 
-terra::writeRaster(bhb.crown.raster, "data/processed/bhb_crownlands.tif", overwrite=TRUE)
-
+# Save our template raster ------------------------------------------------
+terra::writeRaster(temp.rast, "data/processed/parks_buf_temprast.tif", overwrite=TRUE)
+sf::st_write(parks.buffer, "data/processed/parks_10km_buffer.shp")
 
