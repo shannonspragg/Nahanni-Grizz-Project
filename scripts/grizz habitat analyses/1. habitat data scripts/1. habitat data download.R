@@ -14,7 +14,7 @@ options(
 
 
 # Mountain parks boundary:
-folder_url <- "https://drive.google.com/drive/u/0/folders/1-PXiFqUj0q-irHrVArvVH9HSmSMUJC5K" # study area data
+folder_url <- "https://drive.google.com/drive/u/0/folders/1HiLbFbICcKsfEv1hEs9LSkJvRiFG2z-D" # study area data
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
@@ -69,7 +69,31 @@ lapply(gdrive_files$id, function(x) drive_download(as_id(x),
                                                    path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
 # Total aboveground biomass data:
-folder_url <- "https://drive.google.com/drive/u/0/folders/1a801nqbPjEuQOdM8mv7aXKth_H-n9wWb" # biomass / NDVI data
+folder_url <- "https://drive.google.com/drive/u/0/folders/1e-tj6U_GDPIFFsR5fnE0vvl_CGNjWIpj" # biomass / NDVI data
+folder <- drive_get(as_id(folder_url))
+gdrive_files <- drive_ls(folder)
+#have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
+lapply(gdrive_files$id, function(x) drive_download(as_id(x),
+                                                   path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+
+# Solar radiation data:
+folder_url <- "https://drive.google.com/drive/u/0/folders/1DDTVoP97aHzhEQe0n7gL1GwT0qO4KlYG" # solar data
+folder <- drive_get(as_id(folder_url))
+gdrive_files <- drive_ls(folder)
+#have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
+lapply(gdrive_files$id, function(x) drive_download(as_id(x),
+                                                   path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+
+# Surficial geology data:
+folder_url <- "https://drive.google.com/drive/u/0/folders/1b3kUeAotpJ5UIp2V_dlZ353lgzgfj_me" # surficial geology
+folder <- drive_get(as_id(folder_url))
+gdrive_files <- drive_ls(folder)
+#have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
+lapply(gdrive_files$id, function(x) drive_download(as_id(x),
+                                                   path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+
+# Tasseled cap data:
+folder_url <- "https://drive.google.com/drive/u/0/folders/1XIHPoXwM_bS3cEJxNZWk5YuFF2jietuC" # tasseled cap
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
