@@ -7,6 +7,7 @@ library(tidyverse)
 library(sf)
 library(rgdal)
 library(terra)
+library(raster)
 library(gdalUtilities)
 
 
@@ -48,9 +49,17 @@ plot(land.crop)
 # 220 = broadleaf
 # 230 = mixedwood
 
+# Try assigning by name
+cls <- data.frame(c(0,20,31,32,33,40,50,80,81,100,210,220,230), c("no change", "water", "snow_inc", "rock_rubble", "exposed_barren_land", "bryoids",
+         "shrubs", "wetland", "wetland-treed", "herbs", "coniferous", "broadleaf", "mixedwood"))
+colnames(cls) <- c("ID", "category")
+levels(land.crop) <- cls
+levels(land.crop)
+plot(land.crop)
+
 # water
-land.raster <- raster(land.crop)
-water <- land.raster[land.raster == 20]
+water <- land.crop == "water" # worked! now make numeric
+water[water == "TRUE"] <- 1
 
 
 
@@ -62,5 +71,5 @@ bhw.recent.wildfires.raster[is.na(bhw.recent.wildfires.raster[])] <- 0
 names(bhw.recent.wildfires.raster)[names(bhw.recent.wildfires.raster) == "YEAR"] <- "recent_wildfires"
 #bhb.fire.rast <- terra::mask(recent.burns.r, bhb.v)
 
-terra::writeRaster(bhw.recent.wildfires.raster, "data/processed/bhb_fire_history.tif", overwrite=TRUE)
-
+#terra::writeRaster(land.crop, "data/processed/land_cover_parks.tif", overwrite=TRUE)
+saveRDS(land.crop, "data/processed/landcover_parks.rds")
