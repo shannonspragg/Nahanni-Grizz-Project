@@ -1,6 +1,15 @@
 # Prep our 'Distance To' Data ----------------------------------------------------
     # We are bringing in the distance to roads/linear features/water layers to make sure they all match
 
+# Distance to water:
+  # Lakes, Rivers and Glaciers in Canada – Canvec Series – Hydrographic Series (Canvec, 2017).
+  # The data taken from this source consisted of: permanent snow and ice, watercourses, waterbodies, and springs.
+
+# Distance to Roads / Linear Features:
+  # Roads and railways were downloaded form the National Road/Railway Network (Statistics Canada, 2016) (Statistics 
+  # Canada, 2015). Additional forestry roads were added from GeoYukon (Government of Yukon, 2021).
+
+
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
 library(sf)

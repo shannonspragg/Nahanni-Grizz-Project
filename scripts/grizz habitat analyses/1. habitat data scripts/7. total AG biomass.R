@@ -1,6 +1,12 @@
 
 # Prep Total Aboveground Biomass Variable ----------------------------------------------
 
+# Individual tree total aboveground biomass is calculated using 
+# species-specific equations. In the measured ground plots, aboveground biomass per hectare 
+# is calculated by summing the values of all trees within a plot and dividing by the area of 
+# the plot. Aboveground biomass may be separated into various biomass components (e.g. stem, 
+# bark, branches, foliage) (units = t/ha). 
+
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
 library(sf)

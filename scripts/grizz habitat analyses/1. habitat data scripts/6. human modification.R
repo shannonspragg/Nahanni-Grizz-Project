@@ -1,6 +1,12 @@
 
 # Prep global Human Modification Variable ----------------------------------------------
 
+# The Global Modification of Terrestrial Systems data set displayed the measure of human modification 
+# of terrestrial lands at 1 km resolution. This data set is a 0-1 metric based on the modelling of 13 
+# anthropogenic stressors and their estimated impacts with a median year of 2016 (Kennedy, Oakleaf, 
+# Theobald, Baruch-Mordo, & Kiesecker, 2020). 
+
+
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
 library(sf)

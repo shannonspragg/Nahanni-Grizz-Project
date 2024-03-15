@@ -1,6 +1,8 @@
 # Prep Forest Landcover Data ----------------------------------------------------
 # Take a look at our landcover classes - save them into individual layers
 
+# High-resolution annual forest land cover maps for Canada’s forested ecosystems (1984-2019) 
+# (Hermosilla, Wulder, White, & Coops, 2022).
 
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
@@ -11,7 +13,7 @@ library(raster)
 library(gdalUtilities)
 
 
-# Filter wildfires by year ------------------------------------------------
+# Bring in our data  ------------------------------------------------
   # Boundaries
 mountain_parks <- st_read("data/original/Yukon, Nahanni, Mountain Parks Shapefile Complete.shp")
 parks.buffer.10km <- st_read("data/processed/parks_10km_buffer.shp")
@@ -40,14 +42,14 @@ plot(land.crop)
 # 31 = snow_ice
 # 32 = rock_rubble
 # 33 = exposed_barren_land
-# 40 = bryoids
+# 40 = bryoids : mosses, liverworts, hornworts
 # 50 = shrubs
 # 80 = wetland
-# 81 = wetland-treed
-# 100 = herbs
-# 210 = coniferous
-# 220 = broadleaf
-# 230 = mixedwood
+# 81 = wetland-treed : red maple, black ash, white elm, and silver maple & eastern white cedar
+# 100 = herbs : grasses, wildflowers, meadows
+# 210 = coniferous : Douglas fir, pine, spruce, larch, true fir, hemlock, cedar, cypress, juniper and yew.
+# 220 = broadleaf : cottonwood, birch, aspen, beech, maple oak
+# 230 = mixedwood : red maple, white birch, aspen and balsam fir, red spruce, hemlock, yellow birch and sugar maple 
 
 # Try assigning by name
 cls <- data.frame(c(0,20,31,32,33,40,50,80,81,100,210,220,230), c("no change", "water", "snow_inc", "rock_rubble", "exposed_barren_land", "bryoids",

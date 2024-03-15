@@ -1,6 +1,15 @@
 
 # Prep Tassled Cap Variable ----------------------------------------------
 
+# For spring 2021 data, the data that fell within the parameters of <20% cloud cover and between 
+# the range of 01/04/2021 to 31/05/2021 were used as priority. If there were gaps in the areas of 
+# interest, then cloud cover was increased until there was data for all areas.
+
+# For summer 2022 data the range of dates between 01/07/2022 to 31/08/2022 were used. The same 
+# priority of cloud cover was used but due to heavy cloud cover across our areas of interest some 
+# areas have inaccurate data from clouds.
+
+
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
 library(sf)

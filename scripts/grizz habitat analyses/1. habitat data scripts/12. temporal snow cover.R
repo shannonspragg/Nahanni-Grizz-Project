@@ -1,6 +1,15 @@
 
 # Prep Temporal Snow Cover Variable ----------------------------------------------
 
+# Granules were downloaded as TIF files from NASA EARTHDATA from MODIS/Terra Snow Cover
+# Daily L3 Global 500m SIN Grid V061 (Hall & Riggs, 2000). The TIF files downloaded have a resolution of 500m.
+
+# The TIF files shows the presence of snow through albedo. Any value between 1-100 shows the 
+# presence of snow. The value of 0 is bare ground. The values above 100 showed information 
+# such as water, clouds, missing data, etc. Any data in the rasters that were not between 
+# 0-100 were changed to 'No Data Values'.
+
+
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
 library(sf)

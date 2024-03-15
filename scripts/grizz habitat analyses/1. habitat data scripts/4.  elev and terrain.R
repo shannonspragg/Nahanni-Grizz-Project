@@ -1,6 +1,8 @@
 
 # Prep DEM elevation,  slope,  aspect,  and terrain ruggedness ----------------
 
+# The Canadian Digital Elevation Model was downloaded from Open Canada (Natural Resources Canada, 2015)
+# Aspect, Slope, Sky View Factor, Visible Sky, and Terrain Roughness Index were all derived from the DEM.
 
 # Load Packages -----------------------------------------------------------
 library(terra)
