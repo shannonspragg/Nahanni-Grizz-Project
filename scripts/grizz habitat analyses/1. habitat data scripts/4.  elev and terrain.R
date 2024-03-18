@@ -14,10 +14,10 @@ library(raster)
   # Boundaries
 mountain_parks <- st_read("data/original/Yukon, Nahanni, Mountain Parks Shapefile Complete.shp")
 parks.buffer.10km <- st_read("data/processed/parks_10km_buffer.shp")
-temp.rast <- rast("data/processed/parks_buf_temprast.tif")
+temp.rast <- rast("data/processed/dist2roads_parks.rds"
 parks.bound.v <- vect(parks.buffer.10km)
-temp.raster <- raster("data/processed/parks_buf_temprast.tif")
-  # DEM layers
+temp.raster <- raster("data/processed/Distance_to_Road.tiff")
+# DEM layers
 aspect <- rast("data/original/Aspect.tiff")
 slope <- rast("data/original/Slope.tiff")
 roughness <- rast("data/original/Terrain_Roughness_Index.tiff") #TRI

@@ -11,56 +11,62 @@ library(gdalUtilities)
 library(dplyr)
 
 # Bring in covariate data: -------------------------------------------------------------
-bhb.50km.boundary <- st_read("data/processed/bhb_50km.shp")
-bhb.watershed <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
+# Boundaries
+mountain_parks <- st_read("data/original/Yukon, Nahanni, Mountain Parks Shapefile Complete.shp")
+parks.buffer.10km <- st_read("data/processed/parks_10km_buffer.shp")
+temp.rast <- rast("data/processed/dist2roads_parks.rds"
+parks.bound.v <- vect(parks.buffer.10km)
+mountain.parks.v <- vect(mountain_parks)
+temp.raster <- raster("data/processed/Distance_to_Road.tiff")
 
-# model 1 Beckman et al., 2015:
-private.land.rast <- rast("data/processed/bhb_privatelands.tif")
-elevation <- rast("data/processed/elevation_km_bhb.tif")
-slope <- rast("data/processed/slope_bhb.tif")
-dist2roads <- rast("data/processed/dist2roads_km_bhb.tif")
-pop.dens <- rast("data/processed/human_dens_bhb.tif")
-shrubland <- rast("data/processed/bhb_shrubland.tif")
-grassland <- rast("data/processed/bhb_grassland.tif")
-coniferous.forest <- rast("data/processed/bhb_conifer_mix.tif")
-broadleaf.forest <- rast("data/processed/bhb_broadleaf_mix.tif")
-alpine.mixed.forest <- rast("data/processed/bhb_alpine_mix.tif")
-waterways <- rast("data/processed/bhb_water_areas.tif")
-dist2water <- rast("data/processed/dist2drainage_km_bhb.tif")
-dist2wb <- rast("data/processed/dist2waterbodies_km_bhb.tif")
-human.development <- rast("data/processed/bhw_ghm.tif")
-ag.land <- rast("data/processed/bhb_agriculture.tif")
-bh.lake <- rast("data/processed/beaverhills_lake.tif")
-recent.wildfires <- rast("data/processed/bhb_fire_history.tif")
-rocky <- rast("data/processed/bhb_rocky_land.tif")
-exposed <- rast("data/processed/bhb_exposed_land.tif")
-snow.ice <- rast("data/processed/bhb_glacial_land.tif")
+# Most common variables in RSF models
+dist2forest <- rast("data/processed/dist2forestedge_parks.rds") # dist2forest
+dist2roads <- rast("data/processed/dist2roads_parks.rds") # dist2roads
+ghm <- rast("data/processed/gHM_parks.rds") # human modification / density
+greenness.spring <- rast("data/processed/tassledcap_spring_greeness_parks.rds")# NDVI/greeness
+greenness.summer <- rast("data/processed/tassledcap_summer_greeness_parks.rds")# NDVI/greeness
+ruggedness <- rast("data/processed/terrain_ruggedness_parks.rds") # ruggedness
+DEM <- rast("data/processed/DEM_parks.rds")# elevation
+solar <- rast("data/processed/solar_radiation_parks.rds") # solar insolation
+wetness.spring <- rast("data/processed/tassledcap_spring_wetness_parks.rds") # precipitation
+wetness.summer <- rast("data/processed/tassledcap_summer_wetness_parks.rds") # precipitation
+abg.biomass <- rast("data/processed/aboveground_biomass_parks.rds") # forest biomass
+# landcover:
+shrubs <- rast("data/processed/shrubs_parks.rds") # shrubs
+conifers <- rast("data/processed/conifers_parks.rds") # conifers
+broadleaf <- rast("data/processed/broadleaf_parks.rds") # broadleaf
+wetland <- rast("data/processed/wetland_parks.rds") # wetland
+wetland.trees <- rast("data/processed/wetlandtrees_parks.rds") # wetland forest
+herbaceous <- rast("data/processed/herbs_parks.rds") # meadows/recent burns
+snow.ice <- rast("data/processed/snow_ice_parks.rds") # snow/ice
+exposed <- rast("data/processed/exposed_parks.rds") # barren/exposed
+water <- rast("data/processed/water_parks.rds") # water
+rock <- rast("data/processed/rocky_parks.rds") # rocky
 
-bhb.buf.vect <- vect(bhb.50km.boundary)
-bhw.v <- vect(bhb.watershed)
+wetland <- sum(wetland, wetland.trees) # combine these
+non-vegetated <- sum(rock, water, snow.ice) # combining to match Milakovic et al., 2012 seasonal variables
 
 # Check Rasters: ----------------------------------------------------------
-    # Desired resolution: 240x240m 
-private.land.rast
-elevation
-slope
+    # Desired resolution: 30m 
+dist2forest
 dist2roads
-pop.dens # might leave this out if using ghm
-shrubland
-grassland
-coniferous.forest
-broadleaf.forest
-alpine.mixed.forest
-waterways
-dist2water
-dist2wb
-human.development
-ag.land
-bh.lake
-recent.wildfires
-rocky
-exposed
-snow.ice
+ghm
+greeness.spring
+greeness.summer
+ruggedness
+DEM
+solar
+wetness.spring
+wetness.summer
+abg.biomass
+shrubs
+conifers
+broadleaf
+wetland
+herbaceous
+non-vegetated
+
+# ------------------------------ stopped editing here!
 
 # Adjust some of these:
 pop.dens.a <- pop.dens / 10000 #making this meters
