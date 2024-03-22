@@ -26,6 +26,7 @@ ghm <- rast("data/processed/gHM_parks.rds") # human modification / density
 greenness.spring <- readRDS("data/processed/tassledcap_spring_greeness_parks.rds")# NDVI/greeness
 greenness.summer <- readRDS("data/processed/tassledcap_summer_greeness_parks.rds")# NDVI/greeness
 ruggedness <- rast("data/processed/terrain_ruggedness_parks.rds") # ruggedness
+slope <- rast("data/processed/slope_parks.rds") # slope
 DEM <- rast("data/processed/DEM_parks.rds")# elevation
 solar <- rast("data/processed/solar_radiation_parks.rds") # solar insolation
 wetness.spring <- rast("data/processed/tassledcap_spring_wetness_parks.rds") # precipitation
@@ -54,6 +55,7 @@ ghm # 0-1
 greeness.spring # -25890 - 7000
 greeness.summer # -26465 - 17855
 ruggedness # 0 - 6611
+slope # 0-89
 DEM #0 - 5940
 solar # 0 - 1700159
 wetness.spring # -17032 - 44667
@@ -77,59 +79,75 @@ greeness.spring.r <- climateStability::rescale0to1(greeness.spring)
 greeness.summer.r <- climateStability::rescale0to1(greeness.summer)
 dist2roads.r <- climateStability::rescale0to1(dist2roads)
 ruggedness.r <- climateStability::rescale0to1(ruggedness)
+slope.r <- climateStability::rescale0to1(slope)
 DEM.r <- climateStability::rescale0to1(DEM)
 solar.r <- climateStability::rescale0to1(solar)
 wetness.spring.r <- climateStability::rescale0to1(wetness.spring)
 wetness.summer.r <- climateStability::rescale0to1(wetness.summer)
 abg.biomass.r <- climateStability::rescale0to1(abg.biomass)
 
+# check on them
+greeness.spring.r
+greeness.summer.r
+dist2roads.r
+ruggedness.r
+slope.r
+DEM.r
+solar.r
+wetness.spring.r
+wetness.summer.r
+abg.biomass.r
 
-# Adjust some of these:
-pop.dens.a <- pop.dens / 10000 #making this meters
-dist2water.a <- dist2water / 100
-dist2wb.a <- dist2wb / 100
-dist2roads.a <- dist2roads / 100
-slope.a <- slope / 10
-
+plot(dist2roads)
+plot(dist2roads.r)
+plot(ruggedness)
+plot(ruggedness.r) # this isn't really showing much
+plot(slope.r)
+plot(DEM)
+plot(DEM.r)
+plot(solar)
+plot(solar.r)
+plot(wetness.spring)
+plot(wetness.spring.r)
+plot(abg.biomass)
+plot(abg.biomass.r)
 
 # Multiply Rasters by Coefficients: ----------------------------------------------------------
-  # Multiplying these variables by coefficients determined from our literature review of bear habitat predictors
+  # Multiplying these variables by coefficients determined from our literature review of grizzly habitat predictors
 
-private.land.pred <- -1. * private.land.rast
-elevation.pred <- 0.5012 * elevation 
-slope.pred <- -0.2058 * slope.a
-dist2roads.pred <- 0.9 * dist2roads.a
-pop.dens.pred <- -1 * pop.dens.a
-shrubland.pred <- -0.35 * shrubland
-grassland.pred <- -1.5 * grassland
-coniferous.forest.pred <- 1.389 * coniferous.forest
-broadleaf.forest.pred <- 2.101 * broadleaf.forest
-alpine.mixed.forest.pred <- 2.323 * alpine.mixed.forest
-rocky.pred <- 0.30 * rocky
-snow.ice.pred <- 1.25 * snow.ice
-exposed.pred <- -0.95 * exposed
-waterways.pred <- -0.5489 * waterways
-dist2water.pred <- -0.0995 * dist2water.a
-dist2wb.pred <- -0.0995 * dist2wb.a
-human.development.pred <- -3.898 * human.development
-ag.land.pred <- -2.303 * ag.land
-bh.lake.pred <- -3.0 * bh.lake
-recent.wildfires.pred <- -0.8 * recent.wildfires
+# Spring model: (the seasonal coefs are for female - may need to avg with male)
+dist2roads.pred <- -0.95 * dist2roads.r
+ghm.pred <- -1 * ghm
+greeness.spring.pred <- 0.75 * greeness.spring.r
+#greeness.summer.pred <- 0.5 * greeness.summer.r
+elevation.pred <- 1.5 * DEM.r
+slope.pred <- 0.25 * slope.r
+solar.pred <- 1.037 * solar.r
+wetness.spring.pred <- 0.45 * wetness.spring.r
+abg.biomass.pred <- 0.5 * abg.biomass.r
+shrubs.pred <- -0.674 * shrubs
+conifers.pred <- -0.501 * conifers
+broadleaf.pred <- -0.141 * broadleaf
+wetland.pred <- 0.158 * wetland
+meadow.herb.pred <- 0.75 * herbaceous
+non.vegetated.pred <- 0.206 * non.vegetated
+
 
 # Stack Precictor Rasters -------------------------------------------------
 
 # Model 1:
-bear.hab.stack <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pred, shrubland.pred, waterways.pred,
-                    grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred, rocky.pred,
-                    snow.ice.pred, exposed.pred, dist2water.pred, dist2wb.pred, human.development.pred, ag.land.pred, 
-                    bh.lake.pred, recent.wildfires.pred)
+bear.hab.spring <- c(dist2roads.pred, ghm.pred, greeness.spring.pred, elevation.pred, slope.pred, solar.pred,
+                     wetness.spring.pred, abg.biomass.pred, shrubs.pred, conifers.pred, broadleaf.pred,
+                     wetland.pred, meadow.herb.pred, non.vegetated.pred)
 
 # Convert to Probability Scale (IF NEEDED): -------------------------------
 
 # Model 1:
-bear.hab.rast <- sum(bear.hab.stack, na.rm=TRUE)
-habitat.prob.rast <- (exp(bear.hab.rast))/(1 + exp(bear.hab.rast))
-plot(habitat.prob.rast)
+bear.hab.spring.rast <- sum(bear.hab.spring, na.rm=TRUE)
+habitat.prob.spring.rast <- (exp(bear.hab.spring.rast))/(1 + exp(bear.hab.spring.rast))
+plot(habitat.prob.spring.rast)
+
+# NOTE: Looks like we need to set all values outside boundary to NA so they don't compute to anything!
 
 # Overlay our boundary line: ----------------------------------------------
 bhb.50km.v <- vect(bhb.50km.boundary)
