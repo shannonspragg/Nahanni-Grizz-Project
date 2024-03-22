@@ -14,17 +14,17 @@ library(dplyr)
 # Boundaries
 mountain_parks <- st_read("data/original/Yukon, Nahanni, Mountain Parks Shapefile Complete.shp")
 parks.buffer.10km <- st_read("data/processed/parks_10km_buffer.shp")
-temp.rast <- rast("data/processed/dist2roads_parks.rds"
+temp.rast <- readRDS("data/processed/dist2roads_parks.rds")
 parks.bound.v <- vect(parks.buffer.10km)
 mountain.parks.v <- vect(mountain_parks)
-temp.raster <- raster("data/processed/Distance_to_Road.tiff")
+#temp.raster <- raster("data/processed/Distance_to_Road.tiff")
 
 # Most common variables in RSF models
-dist2forest <- rast("data/processed/dist2forestedge_parks.rds") # dist2forest
+#dist2forest <- rast("data/processed/dist2forestedge_parks.rds") # dist2forest
 dist2roads <- rast("data/processed/dist2roads_parks.rds") # dist2roads
 ghm <- rast("data/processed/gHM_parks.rds") # human modification / density
-greenness.spring <- rast("data/processed/tassledcap_spring_greeness_parks.rds")# NDVI/greeness
-greenness.summer <- rast("data/processed/tassledcap_summer_greeness_parks.rds")# NDVI/greeness
+greenness.spring <- readRDS("data/processed/tassledcap_spring_greeness_parks.rds")# NDVI/greeness
+greenness.summer <- readRDS("data/processed/tassledcap_summer_greeness_parks.rds")# NDVI/greeness
 ruggedness <- rast("data/processed/terrain_ruggedness_parks.rds") # ruggedness
 DEM <- rast("data/processed/DEM_parks.rds")# elevation
 solar <- rast("data/processed/solar_radiation_parks.rds") # solar insolation
@@ -44,29 +44,45 @@ water <- rast("data/processed/water_parks.rds") # water
 rock <- rast("data/processed/rocky_parks.rds") # rocky
 
 wetland <- sum(wetland, wetland.trees) # combine these
-non-vegetated <- sum(rock, water, snow.ice) # combining to match Milakovic et al., 2012 seasonal variables
+non.vegetated <- sum(rock, water, snow.ice) # combining to match Milakovic et al., 2012 seasonal variables
 
 # Check Rasters: ----------------------------------------------------------
     # Desired resolution: 30m 
-dist2forest
-dist2roads
-ghm
-greeness.spring
-greeness.summer
-ruggedness
-DEM
-solar
-wetness.spring
-wetness.summer
-abg.biomass
-shrubs
+#dist2forest - couldn't make this - computational power too much
+dist2roads # 0-225
+ghm # 0-1
+greeness.spring # -25890 - 7000
+greeness.summer # -26465 - 17855
+ruggedness # 0 - 6611
+DEM #0 - 5940
+solar # 0 - 1700159
+wetness.spring # -17032 - 44667
+wetness.summer # -50725 - 47328
+abg.biomass # 0-600
+shrubs # 0-1
 conifers
 broadleaf
 wetland
 herbaceous
-non-vegetated
+non.vegetated # 0-1
+
+plot(wetland)
+plot(non.vegetated)
 
 # ------------------------------ stopped editing here!
+
+# Several of these need to be rescaled:
+install.packages("climateStability")
+greeness.spring.r <- climateStability::rescale0to1(greeness.spring)
+greeness.summer.r <- climateStability::rescale0to1(greeness.summer)
+dist2roads.r <- climateStability::rescale0to1(dist2roads)
+ruggedness.r <- climateStability::rescale0to1(ruggedness)
+DEM.r <- climateStability::rescale0to1(DEM)
+solar.r <- climateStability::rescale0to1(solar)
+wetness.spring.r <- climateStability::rescale0to1(wetness.spring)
+wetness.summer.r <- climateStability::rescale0to1(wetness.summer)
+abg.biomass.r <- climateStability::rescale0to1(abg.biomass)
+
 
 # Adjust some of these:
 pop.dens.a <- pop.dens / 10000 #making this meters

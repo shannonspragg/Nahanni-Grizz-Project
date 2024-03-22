@@ -47,10 +47,14 @@ dist2roads.crop <- crop(dist2roads, project(parks.bound.v, dist2roads)) #crop to
 dist2linear.crop <- crop(dist2linear, project(parks.bound.v, dist2linear)) 
 dist2water.crop <- crop(dist2water, project(parks.bound.v, dist2water)) 
 
+# Convert to km
+dist2roads.km <- measurements::conv_unit(dist2roads.crop, "m", "km")
+dist2linear.km <- measurements::conv_unit(dist2linear.crop, "m", "km")
+dist2water.km <- measurements::conv_unit(dist2water.crop, "m", "km")
 
 # Save layers -------------------------------------------------------------
-saveRDS(dist2roads.crop, "data/processed/dist2roads_parks.rds")
-saveRDS(dist2linear.crop, "data/processed/dist2linear-features_parks.rds")
-saveRDS(dist2water.crop, "data/processed/dist2water_parks.rds")
+saveRDS(dist2roads.km, "data/processed/dist2roads_parks.rds")
+saveRDS(dist2linear.km, "data/processed/dist2linear-features_parks.rds")
+saveRDS(dist2water.km, "data/processed/dist2water_parks.rds")
 
 #terra::writeRaster(dist2roads.crop, "data/processed/dist2roads_parks.tif", overwrite=TRUE)

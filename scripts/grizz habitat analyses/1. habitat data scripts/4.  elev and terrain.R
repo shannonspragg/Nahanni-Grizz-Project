@@ -14,7 +14,7 @@ library(raster)
   # Boundaries
 mountain_parks <- st_read("data/original/Yukon, Nahanni, Mountain Parks Shapefile Complete.shp")
 parks.buffer.10km <- st_read("data/processed/parks_10km_buffer.shp")
-temp.rast <- rast("data/processed/dist2roads_parks.rds"
+temp.rast <- rast("data/processed/dist2roads_parks.rds")
 parks.bound.v <- vect(parks.buffer.10km)
 temp.raster <- raster("data/processed/Distance_to_Road.tiff")
 # DEM layers
@@ -38,7 +38,7 @@ plot(DEM)
 aspect.crop <- crop(aspect, project(parks.bound.v, aspect)) #crop to buffer
 slope.crop <- crop(slope, project(parks.bound.v, slope)) 
 roughness.crop <- crop(roughness, project(parks.bound.v, roughness)) 
-DEM.crop <- crop(aspect, project(parks.bound.v, DEM)) 
+DEM.crop <- crop(DEM, project(parks.bound.v, DEM)) 
 
   # May need to resample to match res for all
 # aspect.rsmpl <- terra::resample(aspect.crop, temp.rast) # Not working, leaving empty values

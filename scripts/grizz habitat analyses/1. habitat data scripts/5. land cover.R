@@ -17,7 +17,7 @@ library(gdalUtilities)
   # Boundaries
 mountain_parks <- st_read("data/original/Yukon, Nahanni, Mountain Parks Shapefile Complete.shp")
 parks.buffer.10km <- st_read("data/processed/parks_10km_buffer.shp")
-temp.rast <- rast("data/processed/dist2roads_parks.rds"
+temp.rast <- rast("data/processed/dist2roads_parks.rds")
 parks.bound.v <- vect(parks.buffer.10km)
 temp.raster <- raster("data/processed/parks_buf_temprast.tif")
 
@@ -145,5 +145,5 @@ saveRDS(wetland.tree.r, "data/processed/wetlandtrees_parks.rds")
 saveRDS(herbs.r, "data/processed/herbs_parks.rds")
 saveRDS(coniferous.r, "data/processed/conifers_parks.rds")
 saveRDS(broadleaf.r, "data/processed/broadleaf_parks.rds")
-saveRDS(mixedwood.r, "data/processed/mixedwood_parks.rds")
+saveRDS(water.r, "data/processed/water_parks.rds")
 
