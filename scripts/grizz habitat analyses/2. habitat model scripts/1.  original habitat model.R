@@ -71,8 +71,6 @@ non.vegetated # 0-1
 plot(wetland)
 plot(non.vegetated)
 
-# ------------------------------ stopped editing here!
-
 # Several of these need to be rescaled:
 install.packages("climateStability")
 greeness.spring.r <- climateStability::rescale0to1(greeness.spring)
@@ -98,39 +96,69 @@ wetness.spring.r
 wetness.summer.r
 abg.biomass.r
 
+# Need to make non-boundary area NA - try this with mask
+greeness.spring.m <- terra::mask(greeness.spring.r, dist2roads)
+greeness.summer.m <- terra::mask(greeness.summer.r, dist2roads)
+dist2roads.m <- terra::mask(dist2roads.r, greeness.spring.m)
+ruggedness.m <- terra::mask(ruggedness.r, dist2roads)
+slope.m <- terra::mask(slope.r, dist2roads)
+DEM.m <- terra::mask(DEM.r, dist2roads)
+solar.m <- terra::mask(solar.r, dist2roads)
+wetness.spring.m <- terra::mask(wetness.spring.r, dist2roads)
+wetness.summer.m <- terra::mask(wetness.summer.r, dist2roads)
+abg.biomass.m <- terra::mask(abg.biomass.r, dist2roads)
+
+
+
+
+
+
 plot(dist2roads)
-plot(dist2roads.r)
-plot(ruggedness)
-plot(ruggedness.r) # this isn't really showing much
-plot(slope.r)
+plot(dist2roads.m)
+plot(ruggedness.m)
+plot(slope.m)
 plot(DEM)
-plot(DEM.r)
+plot(DEM.m)
 plot(solar)
-plot(solar.r)
+plot(solar.m)
 plot(wetness.spring)
-plot(wetness.spring.r)
+plot(wetness.spring.m)
 plot(abg.biomass)
-plot(abg.biomass.r)
+plot(abg.biomass.m)
 
 # Multiply Rasters by Coefficients: ----------------------------------------------------------
   # Multiplying these variables by coefficients determined from our literature review of grizzly habitat predictors
 
 # Spring model: (the seasonal coefs are for female - may need to avg with male)
-dist2roads.pred <- -0.95 * dist2roads.r
+dist2roads.pred <- -0.95 * dist2roads.m
 ghm.pred <- -1 * ghm
-greeness.spring.pred <- 0.75 * greeness.spring.r
-#greeness.summer.pred <- 0.5 * greeness.summer.r
-elevation.pred <- 1.5 * DEM.r
-slope.pred <- 0.25 * slope.r
-solar.pred <- 1.037 * solar.r
-wetness.spring.pred <- 0.45 * wetness.spring.r
-abg.biomass.pred <- 0.5 * abg.biomass.r
+greeness.spring.pred <- 0.75 * greeness.spring.m
+#greeness.summer.pred <- 0.5 * greeness.summer.m
+elevation.pred <- 1.15 * DEM.m
+slope.pred <- 0.25 * slope.m
+solar.pred <- 1.037 * solar.m
+wetness.spring.pred <- 0.45 * wetness.spring.m
+abg.biomass.pred <- 0.5 * abg.biomass.m
 shrubs.pred <- -0.674 * shrubs
 conifers.pred <- -0.501 * conifers
 broadleaf.pred <- -0.141 * broadleaf
 wetland.pred <- 0.158 * wetland
 meadow.herb.pred <- 0.75 * herbaceous
 non.vegetated.pred <- 0.206 * non.vegetated
+
+
+# Save pred objects:
+saveRDS(dist2roads.pred, "data/processed/dist2roads_pred.rds")
+saveRDS(ghm.pred, "data/processed/ghm_pred.rds")
+saveRDS(greeness.spring.pred, "data/processed/greeness_spring_pred.rds")
+saveRDS(elevation.pred, "data/processed/elevation_pred.rds")
+saveRDS(slope.pred, "data/processed/slope_pred.rds")
+saveRDS(solar.pred, "data/processed/solar_pred.rds")
+saveRDS(wetness.spring.pred, "data/processed/wetness_spring_pred.rds")
+saveRDS(abg.biomass.pred, "data/processed/abg_biomass_pred.rds")
+saveRDS(shrubs.pred, "data/processed/shrubs_pred.rds")
+
+
 
 
 # Stack Precictor Rasters -------------------------------------------------
