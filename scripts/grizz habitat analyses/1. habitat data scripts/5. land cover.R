@@ -134,6 +134,7 @@ plot(coniferous.r) # looks good
 
 # Save our layers ---------------------------------------------------------
 saveRDS(land.crop, "data/processed/landcover_parks.rds") # all together, categorical
+writeRaster(land.crop, "data/processed/landcover_parks.tif")
   # Individual land cover types
 saveRDS(snow.ice.r, "data/processed/snow_ice_parks.rds")
 saveRDS(rock.r, "data/processed/rocky_parks.rds")

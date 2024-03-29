@@ -9,6 +9,7 @@ library(rgdal)
 library(terra)
 library(gdalUtilities)
 library(dplyr)
+library(raster)
 
 # Bring in covariate data: -------------------------------------------------------------
 # Boundaries
@@ -158,7 +159,7 @@ saveRDS(wetness.spring.pred, "data/processed/wetness_spring_pred.rds")
 saveRDS(abg.biomass.pred, "data/processed/abg_biomass_pred.rds")
 saveRDS(shrubs.pred, "data/processed/shrubs_pred.rds")
 
-
+dist2roads.pred <- readRDS("data/processed/dist2roads_pred.rds")
 
 
 # Stack Precictor Rasters -------------------------------------------------
