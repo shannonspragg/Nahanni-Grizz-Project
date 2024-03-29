@@ -5,9 +5,10 @@
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
 library(sf)
-library(rgdal)
+install.packages("/Users/shannonspragg/Downloads/rgdal")
+#library(rgdal)
 library(terra)
-library(gdalUtilities)
+#library(gdalUtilities)
 library(dplyr)
 library(raster)
 
@@ -15,10 +16,16 @@ library(raster)
 # Boundaries
 mountain_parks <- st_read("data/original/Yukon, Nahanni, Mountain Parks Shapefile Complete.shp")
 parks.buffer.10km <- st_read("data/processed/parks_10km_buffer.shp")
-temp.rast <- readRDS("data/processed/dist2roads_parks.rds")
+temp.rast <- raster("/Users/shannonspragg/Nahanni-Grizz-Project/data/processed/dist2roads_parks.rds")
 parks.bound.v <- vect(parks.buffer.10km)
 mountain.parks.v <- vect(mountain_parks)
 #temp.raster <- raster("data/processed/Distance_to_Road.tiff")
+data.path <- "/Users/shannonspragg/Nahanni-Grizz-Project/data/processed/"
+test <- rast(data.path, "gHM_parks")
+
+files <- list.files(path = "data/processed/", pattern = ".rds")
+data.list <- lapply(files, function (x) readRDS(x))
+# Try pulling in all pred files as a list
 
 # Most common variables in RSF models
 #dist2forest <- rast("data/processed/dist2forestedge_parks.rds") # dist2forest

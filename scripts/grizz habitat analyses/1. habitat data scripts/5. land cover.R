@@ -7,10 +7,10 @@
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
 library(sf)
-library(rgdal)
+#library(rgdal)
 library(terra)
 library(raster)
-library(gdalUtilities)
+#library(gdalUtilities)
 
 
 # Bring in our data  ------------------------------------------------
@@ -136,6 +136,19 @@ plot(coniferous.r) # looks good
 saveRDS(land.crop, "data/processed/landcover_parks.rds") # all together, categorical
 writeRaster(land.crop, "data/processed/landcover_parks.tif")
   # Individual land cover types
+writeRaster(snow.ice.r, "data/processed/snow_ice_parks.tif")
+writeRaster(rock.r, "data/processed/rock_parks.tif")
+writeRaster(exposed.r, "data/processed/exposed_parks.tif")
+writeRaster(shrubs.r, "data/processed/shrubs_parks.tif")
+writeRaster(wetland.r, "data/processed/wetland_parks.tif")
+writeRaster(wetland.tree.r, "data/processed/wetland_trees_parks.tif")
+writeRaster(coniferous.r, "data/processed/conifers_parks.tif")
+writeRaster(broadleaf.r, "data/processed/broadleaf_parks.tif")
+writeRaster(mixedwood.r, "data/processed/mixedwood_parks.tif")
+
+
+
+
 saveRDS(snow.ice.r, "data/processed/snow_ice_parks.rds")
 saveRDS(rock.r, "data/processed/rocky_parks.rds")
 saveRDS(exposed.r, "data/processed/exposed_parks.rds")

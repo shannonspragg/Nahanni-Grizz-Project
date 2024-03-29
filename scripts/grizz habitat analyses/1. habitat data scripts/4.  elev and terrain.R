@@ -65,3 +65,6 @@ saveRDS(slope.crop, "data/processed/slope_parks.rds")
 saveRDS(aspect.crop, "data/processed/aspect_parks.rds")
 saveRDS(DEM.crop, "data/processed/DEM_parks.rds")
 
+terra::writeRaster(slope.crop, "data/processed/slope_parks.tif", overwrite=TRUE)
+terra::writeRaster(DEM.crop, "data/processed/DEM_parks.tif", overwrite=TRUE)
+

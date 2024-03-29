@@ -13,10 +13,11 @@
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
 library(sf)
-library(rgdal)
+#library(rgdal)
 library(terra)
-library(gdalUtilities)
+#library(gdalUtilities)
 library(dplyr)
+install.packages("measurements")
 
 # Load First Nation data -------------------------------------------------------------
 # Boundaries
@@ -48,6 +49,7 @@ dist2linear.crop <- crop(dist2linear, project(parks.bound.v, dist2linear))
 dist2water.crop <- crop(dist2water, project(parks.bound.v, dist2water)) 
 
 # Convert to km
+library(measurements)
 dist2roads.km <- measurements::conv_unit(dist2roads.crop, "m", "km")
 dist2linear.km <- measurements::conv_unit(dist2linear.crop, "m", "km")
 dist2water.km <- measurements::conv_unit(dist2water.crop, "m", "km")
@@ -57,4 +59,5 @@ saveRDS(dist2roads.km, "data/processed/dist2roads_parks.rds")
 saveRDS(dist2linear.km, "data/processed/dist2linear-features_parks.rds")
 saveRDS(dist2water.km, "data/processed/dist2water_parks.rds")
 
-#terra::writeRaster(dist2roads.crop, "data/processed/dist2roads_parks.tif", overwrite=TRUE)
+terra::writeRaster(dist2roads.km, "data/processed/dist2roads_parks.tif", overwrite=TRUE)
+terra::writeRaster(dist2linear.km, "data/processed/dist2linear_parks.tif", overwrite=TRUE)
