@@ -10,15 +10,15 @@
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
 library(sf)
-library(rgdal)
+#library(rgdal)
 library(terra)
 library(gdalUtilities)
-library(raster)
+#library(raster)
 
 # Load Data -------------------------------------------------------------
 mountain_parks <- st_read("data/original/Yukon, Nahanni, Mountain Parks Shapefile Complete.shp")
 parks.buffer.10km <- st_read("data/processed/parks_10km_buffer.shp")
-temp.rast <- rast("data/processed/dist2roads_parks.rds"
+temp.rast <- rast("data/processed/dist2roads_parks.tif")
 parks.bound.v <- vect(parks.buffer.10km)
 temp.raster <- raster("data/processed/parks_buf_temprast.tif")
 
@@ -36,5 +36,7 @@ biomass.crop # Looks like this is on a 0-600 scale - note for later
 
 
 # Save the file -----------------------------------------------------------
+writeRaster(biomass.crop, "data/processed/aboveground_biomass_parks.tif")
+
 saveRDS(biomass.crop, "data/processed/aboveground_biomass_parks.rds")
 

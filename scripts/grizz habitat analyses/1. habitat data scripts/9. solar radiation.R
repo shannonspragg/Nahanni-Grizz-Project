@@ -4,15 +4,15 @@
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
 library(sf)
-library(rgdal)
+#library(rgdal)
 library(terra)
-library(gdalUtilities)
+#library(gdalUtilities)
 library(raster)
 
 # Load Data -------------------------------------------------------------
 mountain_parks <- st_read("data/original/Yukon, Nahanni, Mountain Parks Shapefile Complete.shp")
 parks.buffer.10km <- st_read("data/processed/parks_10km_buffer.shp")
-temp.rast <- rast("data/processed/dist2roads_parks.rds"
+temp.rast <- rast("data/processed/dist2roads_parks.tif")
 parks.bound.v <- vect(parks.buffer.10km)
 temp.raster <- raster("data/processed/parks_buf_temprast.tif")
 
@@ -27,8 +27,10 @@ solar.crop <- crop(solar, project(parks.bound.v, solar)) #crop to buffer
 plot(solar.crop)
 
 solar.crop 
-solar.crop[is.na(solar.crop)] <- 0 # Had some NA's in here - fixed to zeros
+#solar.crop[is.na(solar.crop)] <- 0 # Had some NA's in here - fixed to zeros
 
 # Save the file -----------------------------------------------------------
+writeRaster(solar.crop, "data/processed/solar_radiation_parks.tif")
+
 saveRDS(solar.crop, "data/processed/solar_radiation_parks.rds")
 

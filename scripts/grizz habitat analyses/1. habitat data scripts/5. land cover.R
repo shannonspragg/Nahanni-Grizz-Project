@@ -145,6 +145,9 @@ writeRaster(wetland.tree.r, "data/processed/wetland_trees_parks.tif")
 writeRaster(coniferous.r, "data/processed/conifers_parks.tif")
 writeRaster(broadleaf.r, "data/processed/broadleaf_parks.tif")
 writeRaster(mixedwood.r, "data/processed/mixedwood_parks.tif")
+writeRaster(mixedwood.r, "data/processed/mixedwood_parks.tif")
+writeRaster(water.r, "data/processed/water_parks.tif")
+writeRaster(herbs.r, "data/processed/herbs_parks.tif")
 
 
 

@@ -13,15 +13,15 @@
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
 library(sf)
-library(rgdal)
+#library(rgdal)
 library(terra)
-library(gdalUtilities)
+#library(gdalUtilities)
 library(raster)
 
 # Load Data -------------------------------------------------------------
 mountain_parks <- st_read("data/original/Yukon, Nahanni, Mountain Parks Shapefile Complete.shp")
 parks.buffer.10km <- st_read("data/processed/parks_10km_buffer.shp")
-temp.rast <- rast("data/processed/dist2roads_parks.rds")
+temp.rast <- rast("data/processed/dist2roads_parks.tif")
 parks.bound.v <- vect(parks.buffer.10km)
 temp.raster <- raster("data/processed/parks_buf_temprast.tif")
 
@@ -56,6 +56,15 @@ plot(tassled.cap.spring.wetness)
 
 
 # Save the file -----------------------------------------------------------
+writeRaster(tassled.cap.summer.brightness, "data/processed/tassledcap_summer_brightness_parks.tif")
+writeRaster(tassled.cap.summer.greenness, "data/processed/tassledcap_summer_greenness_parks.tif")
+writeRaster(tassled.cap.summer.wetness, "data/processed/tassledcap_summer_wetness_parks.tif")
+
+writeRaster(tassled.cap.spring.brightness, "data/processed/tassledcap_spring_brightness_parks.tif")
+writeRaster(tassled.cap.spring.greenness, "data/processed/tassledcap_spring_greenness_parks.tif")
+writeRaster(tassled.cap.spring.wetness, "data/processed/tassledcap_spring_wetness_parks.tif")
+
+
 saveRDS(tassled.cap.summer.brightness, "data/processed/tassledcap_summer_brightness_parks.rds")
 saveRDS(tassled.cap.summer.greenness, "data/processed/tassledcap_summer_greenness_parks.rds")
 saveRDS(tassled.cap.summer.wetness, "data/processed/tassledcap_summer_wetness_parks.rds")
